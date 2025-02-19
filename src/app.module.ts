@@ -6,7 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { QuestionModule } from './question/question.module';
 import { AnswerModule } from './answer/answer.module';
-import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -14,7 +13,6 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     QuestionModule, 
     AnswerModule, 
-    AuthModule, 
     MongooseModule.forRoot(process.env.MONGODB_URI ?? ''), UserModule, // Ensure proper fallback
   ],
   controllers: [AppController],
