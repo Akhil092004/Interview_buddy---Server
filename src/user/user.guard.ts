@@ -15,13 +15,14 @@ interface Payload {
 
 @Injectable()
 export class UserGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}jjjjjjjjjjjjjjjj
+  constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
+      return false
     }
     try {
       const payload: Payload = await this.jwtService.verifyAsync<Payload>(
@@ -32,6 +33,7 @@ export class UserGuard implements CanActivate {
       );
 
       request['user'] = payload;
+      return true;
     } catch {
       throw new UnauthorizedException();
     }

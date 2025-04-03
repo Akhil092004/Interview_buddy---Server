@@ -23,7 +23,7 @@ export class UserController {
 
     @UseGuards(UserGuard)
     @Get('profile')
-    getProfile(@Request() req) : {message:string} {
+    getProfile(@Request() req ) : {message:string} {
         console.log(req.user);
         return this.UserService.getProfile();
     }
