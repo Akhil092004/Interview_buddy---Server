@@ -21,7 +21,7 @@ export class UserGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      // throw new UnauthorizedException();
       return false
     }
     try {
@@ -37,7 +37,6 @@ export class UserGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
-    return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

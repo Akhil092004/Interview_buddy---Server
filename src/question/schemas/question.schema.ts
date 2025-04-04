@@ -10,12 +10,14 @@ export class Question{
     @Prop({required:true})
     topic:string;
 
-    @Prop({default:"medium"})
+    @Prop({type: [String]})
+    tags: string[];
+
+    @Prop({type:String,enum:["easy","medium","hard"],default:"medium"})
     difficulty:string;
 
-
-    @Prop({type:Types.ObjectId,ref:"User",required:true})
-    createdBy: Types.ObjectId;
+    @Prop({type:Types.ObjectId,ref:"Answer",required:true})
+    answer:Types.ObjectId;
 
     @Prop({type:[String]})
     hints: string[];
