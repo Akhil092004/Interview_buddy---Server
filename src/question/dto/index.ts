@@ -1,4 +1,4 @@
-import { QuestionDto } from "./question.dto";
+import {createQuestionDto } from "./createQuestion.dto";
 
 
-export {QuestionDto}
+export {createQuestionDto}

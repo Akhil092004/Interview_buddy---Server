@@ -1,14 +1,12 @@
 import {
   Injectable,
   NotFoundException,
-  HttpException,
-  HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question } from './schemas/question.schema';
-import mongoose, { Types } from 'mongoose';
-import { QuestionDto } from './dto';
+import mongoose from 'mongoose';
+import { createQuestionDto } from './dto';
 
 @Injectable()
 export class QuestionService {
@@ -17,13 +15,13 @@ export class QuestionService {
     private questionModel: mongoose.Model<Question>,
   ) {}
 
-  async createQuestion(dto: QuestionDto): Promise<Question> {
+  async createQuestion(dto: createQuestionDto): Promise<Question> {
     try {
       const {
         questionText,
         topic,
         difficulty = 'Medium',
-        createdBy,
+        tags = [],
         hints = [],
       } = dto;
 
@@ -31,7 +29,7 @@ export class QuestionService {
         questionText,
         topic,
         difficulty,
-        createdBy: new Types.ObjectId(createdBy),
+        tags,
         hints,
       });
 
@@ -59,18 +57,6 @@ export class QuestionService {
     }
   }
 
-  async getQuestionsByUser(id: string): Promise<Question[]> {
-    try {
-      const objectId = new Types.ObjectId(id);
-
-      const questions = await this.questionModel.find({ createdBy: objectId });
-
-      return questions;
-    } catch (error) {
-      throw new HttpException((error as Error).message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
   async getQuestionById(id: string): Promise<Question> {
     try {
       const ques = await this.questionModel.findById(id);
@@ -91,7 +77,7 @@ export class QuestionService {
       if (!deletedQues)
         throw new NotFoundException(`Question with id = "${id}" not found`);
 
-      //make sure to delete the corresponding answer also
+      
       return { message: 'Question deleted Successfully' };
     } catch (error) {
       throw new BadRequestException(error);

@@ -2,7 +2,7 @@
 
 import { Body, Controller,Delete,Get,Param,Post, Query, UseGuards } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { QuestionDto } from './dto';
+import { createQuestionDto } from './dto';
 import { UserGuard } from './../user/user.guard';
 import { Question } from './schemas/question.schema';
 
@@ -12,7 +12,7 @@ export class QuestionController {
 
     @UseGuards(UserGuard)
     @Post()
-    async createQuestion(@Body() dto:QuestionDto) : Promise<Question>{
+    async createQuestion(@Body() dto:createQuestionDto) : Promise<Question>{
         return await this.QuestionService.createQuestion(dto);
     }
     
@@ -20,12 +20,6 @@ export class QuestionController {
     @Get()
     async getQuestions(@Query() dto:{topic:string,diffifulty?:string}) {
         return await this.QuestionService.getQuestions(dto);
-    }
-
-    @UseGuards(UserGuard)
-    @Get("user/:id")
-    async getQuestionsByUser(@Param() param:{id:string}){
-        return await this.QuestionService.getQuestionsByUser(param.id);
     }
 
     @UseGuards(UserGuard)

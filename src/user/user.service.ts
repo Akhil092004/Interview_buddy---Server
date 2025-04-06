@@ -78,13 +78,24 @@ export class UserService {
     }
 
 
-    //get user profile by fetching user email from request in user.guard.ts
-    getProfile(){
-        return {message:"got into getProfile"};
+    //get user profile by fetching user id from request in user.guard.ts
+    async getProfile(id:string) : Promise<User> {
+
+        try {
+            const userId = new mongoose.Types.ObjectId(id);
+
+            if(!userId){
+                throw new BadRequestException("Invalid user id");
+            }
+            const user = await this.userModel.findById(userId);
+
+            if(!user){
+                throw new BadRequestException("User not found");
+            }
+            return user;
+
+        } catch {
+            throw new BadRequestException("cannot get the user profile");
+        }
     }
-
-    
-
-
-    
 }

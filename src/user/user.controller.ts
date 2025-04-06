@@ -17,15 +17,15 @@ export class UserController {
 
 
     @Post('signin')
-    async singin(@Body() dto:SigninDto):Promise<{accessToken:string}>{
+    async signin(@Body() dto:SigninDto):Promise<{accessToken:string}>{
         return await this.UserService.signin(dto);
     }
 
     @UseGuards(UserGuard)
     @Get('profile')
-    getProfile(@Request() req: { user: any }): { message: string } {
-        console.log(req.user);
-        return this.UserService.getProfile();
+    getProfile(@Request() req: { user: {sub:string} }): Promise<User> {
+        // console.log(req.user);
+        return this.UserService.getProfile(req.user.sub);
     }
 
 }
