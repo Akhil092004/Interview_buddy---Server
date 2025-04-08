@@ -18,7 +18,6 @@ export class Answer{
 
     @Prop({type:String,default:""})
     aiFeedback:string
-    
 }
 
 

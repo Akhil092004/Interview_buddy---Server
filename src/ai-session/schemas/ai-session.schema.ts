@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 
 export class QaPair {
@@ -22,7 +22,7 @@ export class QaPair {
 @Schema({ timestamps: true })
 export class AiSession {
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    createdBy: ObjectId;
+    createdBy: Types.ObjectId;
     
     @Prop({ type: [QaPair], required: true })
     qaPairs: QaPair[];

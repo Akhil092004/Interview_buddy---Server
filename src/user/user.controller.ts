@@ -23,9 +23,15 @@ export class UserController {
 
     @UseGuards(UserGuard)
     @Get('profile')
-    getProfile(@Request() req: { user: {sub:string} }): Promise<User> {
-        // console.log(req.user);
-        return this.UserService.getProfile(req.user.sub);
+    async getProfile(@Request() req: { user: {sub:string} }): Promise<User> {
+        return await this.UserService.getProfile(req.user.sub);
     }
+
+    @UseGuards(UserGuard)
+    @Get('marked-questions-with-answers')
+    async getMarkedQuestionsWithAnswers(@Request() req: { user: {sub:string} }) : Promise<any[]> {
+        return await this.UserService.getMarkedQuestions(req.user.sub);
+    }
+
 
 }

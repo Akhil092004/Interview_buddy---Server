@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { InjectModel } from '@nestjs/mongoose';
 import { Answer } from './schemas/answer.schema';
 import mongoose, { Types } from 'mongoose';
-import { AnswerDto,getAnswerByIdDto } from './dto';
+import { createAnswerDto } from './dto';
 
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AnswerService {
     ){}
 
 
-    async addAnswer(dto : AnswerDto):Promise<Answer>{
+    async addAnswer(dto : createAnswerDto):Promise<Answer>{
         try {
             const answerData: Answer = {
                 userId: new Types.ObjectId(dto.userId),
@@ -29,26 +29,6 @@ export class AnswerService {
         } catch (error) {
             console.log(error);
             throw new InternalServerErrorException("error while adding the message");
-        }
-    }
-
-    async getAnswerById(dto : getAnswerByIdDto) :Promise<Answer>{
-        try {
-            const {questionId,userId} = dto;
-
-            const questionObjectId = new Types.ObjectId(questionId);
-            const userObjectId = new Types.ObjectId(userId);
-
-            const ans = await this.answerModel.findOne({questionId:questionObjectId,userId:userObjectId});
-
-            if(!ans){
-                throw new NotFoundException("Cannot find the asnswer with given question and user id");
-            }
-
-            return ans;
-        } catch (error) {
-            console.log(error);
-            throw new InternalServerErrorException("errror while fetching the answer");
         }
     }
 
@@ -92,5 +72,37 @@ export class AnswerService {
             throw new InternalServerErrorException(`Cannot fetch the answer with id : ${id}`);
         }
     }
+
+    async getAnswerByQuestionIdAndUserId({ userId, questionId }: { userId: string; questionId: string }): Promise<Answer | null> {
+        try {
+            if(!userId || !questionId) throw new BadRequestException("userId or questionId not provided");
+
+            const userObjectId = new Types.ObjectId(userId);
+            const questionObjectId = new Types.ObjectId(questionId);
+
+            const answer = await this.answerModel.findOne({ userId: userObjectId, questionId: questionObjectId });
+
+            return answer || null
+            
+        } catch {
+            throw new InternalServerErrorException("error while fetching the answer with given question and user id");
+        }
+    }
+
+    async getAnswerByUserId(userId:string) :Promise<Answer[]> {
+        try {
+            if(!userId) throw new BadRequestException("userId not provided");
+
+            const userObjectId = new Types.ObjectId(userId);
+
+            const answers = await this.answerModel.find({userId:userObjectId});
+
+            return answers;
+            
+        } catch {
+            throw new InternalServerErrorException("error while fetching the answer with given user id");
+        }
+    }
+
 
 }

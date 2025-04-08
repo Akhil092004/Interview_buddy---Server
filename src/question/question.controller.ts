@@ -12,10 +12,10 @@ export class QuestionController {
 
     @UseGuards(UserGuard)
     @Post()
-    async createQuestion(@Body() dto:createQuestionDto) : Promise<Question>{
+    async createQuestion( @Body() dto:createQuestionDto ) : Promise<Question>{
         return await this.QuestionService.createQuestion(dto);
     }
-    
+
     @UseGuards(UserGuard)
     @Get()
     async getQuestions(@Query() dto:{topic:string,diffifulty?:string}) {
