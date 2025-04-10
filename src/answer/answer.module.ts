@@ -9,6 +9,7 @@ import { AnswerSchema } from './schemas/answer.schema';
     MongooseModule.forFeature([{name:"Answer",schema:AnswerSchema}])
   ],
   providers: [AnswerService],
-  controllers: [AnswerController]
+  controllers: [AnswerController],
+  exports : [AnswerService]
 })
 export class AnswerModule {}

@@ -9,6 +9,7 @@ import { QuestionSchema } from './schemas/question.schema';
     MongooseModule.forFeature([{name:"Question",schema:QuestionSchema}])
   ],
   providers: [QuestionService],
-  controllers: [QuestionController]
+  controllers: [QuestionController],
+  exports:[QuestionService]
 })
 export class QuestionModule {}
