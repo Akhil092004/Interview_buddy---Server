@@ -1,5 +1,5 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose'
-import { Types, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 
 @Schema({timestamps:true})
@@ -21,10 +21,10 @@ export class User{
     credits:number;
 
     @Prop({type:[Types.ObjectId],ref:"Question",default:[]})
-    markedQuestions:ObjectId[];
+    markedQuestions:Types.ObjectId[];
 
     @Prop({type:[Types.ObjectId],ref:"Session",default:[]})
-    pastSessions:ObjectId[];
+    pastSessions:Types.ObjectId[];
 
     @Prop({ type: Date })
     lastLogin:Date;

@@ -43,12 +43,13 @@ export class QuestionService {
     topic,
     difficulty,
   }: {
-    topic: string;
+    topic?: string;
     difficulty?: string;
   }) {
     try {
-      const filter: { topic: string; difficulty?: string } = { topic };
-
+      const filter: { topic?: string; difficulty?: string } = {};
+      
+      if(topic) filter.topic = topic;
       if (difficulty) filter.difficulty = difficulty;
 
       return await this.questionModel.find(filter);

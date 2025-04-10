@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import * as mongoose from 'mongoose';
@@ -38,7 +38,7 @@ export class UserService {
 
                 throw new BadRequestException("User already exists");
             }
-    
+            
             const hashedPassword = await bcrypt.hash(password,10);
             console.log("user created");
     
@@ -203,7 +203,53 @@ export class UserService {
         }
     }
 
+    async markQuestion(questionId:string,id:string) : Promise<User> {
+        try {
+            const quesId = new mongoose.Types.ObjectId(questionId);
 
+            if(!quesId) throw new BadRequestException("Question Id not provided");
+
+            const userId = new mongoose.Types.ObjectId(id);
+
+            const user = await this.userModel.findById(userId);
+
+            if(!user) throw new NotFoundException("User not found")
+
+            user.markedQuestions.push(quesId);
+
+            await user.save();
+
+            return user
+
+        } catch  {
+            throw new InternalServerErrorException("cannot mark the question");
+        }
+    }
+
+    async updateCredits(id:string,value:number) : Promise<User> {
+        try {
+            const userId = new mongoose.Types.ObjectId(id);
+
+            const user = await this.userModel.findById(userId);
+
+            if(!user) throw new NotFoundException("User not found")
+
+            const currCred = user.credits;
+
+            if(value < 0 && (-value > currCred)) throw new BadRequestException("Insufficients credits")
+
+            user.credits += value;
+
+            return await user.save();
+
+        } catch {
+            throw new InternalServerErrorException("cannot update credits");
+        }
+    }
 
     
+
+
+
+
 }

@@ -18,7 +18,7 @@ export class QuestionController {
 
     @UseGuards(UserGuard)
     @Get()
-    async getQuestions(@Query() dto:{topic:string,diffifulty?:string}) {
+    async getQuestions(@Query() dto:{topic?:string,diffifulty?:string}) : Promise<Question[]> {
         return await this.QuestionService.getQuestions(dto);
     }
 
