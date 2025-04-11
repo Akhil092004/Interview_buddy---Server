@@ -3,13 +3,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Answer } from './schemas/answer.schema';
 import mongoose, { Types } from 'mongoose';
 import { createAnswerDto } from './dto';
+import { AiService } from './../ai/ai.service';
+import { QuestionService } from 'src/question/question.service';
+import { Question } from 'src/question/interface/question.interface';
 
 
 @Injectable()
 export class AnswerService {
     constructor(
         @InjectModel(Answer.name)
-        private answerModel:mongoose.Model<Answer>
+        private answerModel:mongoose.Model<Answer>,
+
+        private AiService : AiService,
+
+        private questionService : QuestionService
     ){}
 
 
@@ -101,6 +108,33 @@ export class AnswerService {
             
         } catch {
             throw new InternalServerErrorException("error while fetching the answer with given user id");
+        }
+    }
+
+    async getAiFeedback(id:string) : Promise<any>{
+        try {
+            const objId = new Types.ObjectId(id);
+            const answer = await this.answerModel.findById(objId);
+
+
+            if(!answer) throw new NotFoundException("Cannot find the answer with given question id");
+
+
+            const question = await this.questionService.getQuestionById(answer.questionId.toString()) as Question;
+
+            if(!question) throw new NotFoundException("Cannot find the question with given answer id");
+
+            const newFeedback = await this.AiService.evaluateAnswer({
+                question: question.questionText,
+                answer: answer.answerText,
+            });
+
+            return newFeedback;
+
+
+
+        } catch {
+            throw new InternalServerErrorException("error while fetching Ai feedback")
         }
     }
 

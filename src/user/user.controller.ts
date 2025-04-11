@@ -41,15 +41,12 @@ export class UserController {
     }
 
     @UseGuards(UserGuard)
-@Post('updateCreds')
-async updateCredits(
-    @Request() req: { user: { sub: string } },
-    @Body('value') value: number,
-): Promise<User> {
-    return await this.UserService.updateCredits(req.user.sub, value);
-}
-
-
-
+    @Post('updateCreds')
+    async updateCredits(
+        @Request() req: { user: { sub: string } },
+        @Body('value') value: number,
+    ): Promise<User> {
+        return await this.UserService.updateCredits(req.user.sub, value);
+    }
 
 }

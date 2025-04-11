@@ -109,7 +109,7 @@ export class UserService {
             console.log(password);
 
             const questions = await this.getMarkedQuestions(id);
-            const sessionDetails = await this.getPastSessions(id);
+            const sessionDetails = await this.aiSessionService.getSessionsByUserId(id);
 
             const ratings = await this.getRatingOnAnswer(id);
 
@@ -154,34 +154,6 @@ export class UserService {
             );
 
             return markedQuestionsWithAnswers;
-
-
-        } catch {
-            throw new BadRequestException("cannot get marked questions");
-        }
-    }
-
-    async getPastSessions(userId:string) : Promise<any[]> {
-        try {
-            if(!userId) throw new BadRequestException("User ID is required");
-
-            const userObjectId = new mongoose.Types.ObjectId(userId);
-
-            const user = await this.userModel.findById(userObjectId);
-
-            if(!user){
-                throw new BadRequestException("User not found");
-            }
-            const pastSessionsIds = user.pastSessions;
-
-            const pastSessionDetail = await Promise.all(
-                pastSessionsIds.map(async (sessionId) : Promise<any> => {
-                    const session = await this.aiSessionService.getAiSessionById(sessionId.toString());
-                    return session;
-                })
-            )
-
-            return pastSessionDetail;
 
 
         } catch {
@@ -246,9 +218,6 @@ export class UserService {
             throw new InternalServerErrorException("cannot update credits");
         }
     }
-
-    
-
 
 
 

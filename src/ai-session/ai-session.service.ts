@@ -44,5 +44,24 @@ export class AiSessionService {
         }
     }
 
+    async getSessionsByUserId(userId: string): Promise<AiSession[]> {
+        try {
+            if (!userId) throw new Error("User ID not provided");
+
+            const userObjectId = new Types.ObjectId(userId);
+
+            const sessions = await this.aiSessionModel.find({ createdBy: userObjectId });
+
+            if (!sessions || sessions.length === 0) {
+                throw new Error("No AI sessions found for the given user ID");
+            }
+
+            return sessions;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Error while fetching AI sessions for the user");
+        }
+    }
+
     
 }

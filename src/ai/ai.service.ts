@@ -44,9 +44,8 @@ export class AiService {
     //     "feedback": "Your answer demonstrates a good understanding of the core concepts, but it lacks depth in explaining the edge cases and performance trade-offs. You could improve by elaborating on time complexity.",
     //     "rating": 7.5
     // }
-
-
     
+
     async generateQuestions(dto: getQuestionsDto): Promise<string[]> {
         const { topic, role, difficulty } = dto;
     
@@ -61,7 +60,7 @@ export class AiService {
                 4. ...
                 5. ...
                 `;
-    
+            
         const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
@@ -84,9 +83,5 @@ export class AiService {
     //     "How would you detect a cycle in a linked list?",
     //     "What are the pros and cons of using a heap vs a hash table?"
     // ]
-
-
-
-
 
 }
