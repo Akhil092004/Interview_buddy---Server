@@ -19,7 +19,8 @@ export class UserGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const cookies = (request.cookies ?? {}) as Partial<Record<string, string>>;
+    const token = cookies.accessToken || this.extractTokenFromHeader(request);
     if (!token) {
       // throw new UnauthorizedException();
       return false

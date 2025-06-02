@@ -1,5 +1,6 @@
 
-import { Body, Controller, Get, Param, Post, Request, UseGuards} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { UserService } from './user.service';
 import { SigninDto, SignupDto } from './dto';
 import { User } from './schemas/user.schema';
@@ -16,10 +17,19 @@ export class UserController {
         return await this.UserService.signup(dto);
     }
 
-
     @Post('signin')
-    async signin(@Body() dto:SigninDto):Promise<{accessToken:string}>{
-        return await this.UserService.signin(dto);
+    @HttpCode(200)
+    async signin(@Body() dto: SigninDto, @Res({ passthrough: true }) res: Response): Promise<{message:string}> {
+
+        const { accessToken } = await this.UserService.signin(dto);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        return { message: 'Login successful' };
     }
 
     @UseGuards(UserGuard)
