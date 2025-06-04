@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { AiSession } from './schemas/ai-session.schema';
 import mongoose, { Types } from 'mongoose';
 import { createSessionDto } from './dto';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AiSessionService {
     constructor(
+        @InjectModel('AiSession')
         private readonly aiSessionModel: mongoose.Model<AiSession>,
     ){}
 

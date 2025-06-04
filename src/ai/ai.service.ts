@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { openai } from './provider/openAI.provider';
+
 import { evaluateAnswer,getQuestionsDto } from './dto';
 import { answerFeedback } from './interfaces';
+import OpenAI from 'openai';
 
 
 @Injectable()
 export class AiService {
+    constructor( private readonly openai : OpenAI) {}
     // there are basically 2 services that out AI will provide
 
     // first is to generate a set of questions for a given set of filter.
@@ -25,8 +27,7 @@ export class AiService {
                     "rating": number (1 to 10)
                 }
                 `;
-                
-        const completion = await openai.chat.completions.create({
+        const completion = await this.openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
             messages: [{ role: 'user', content: prompt }],
         });
@@ -60,8 +61,7 @@ export class AiService {
                 4. ...
                 5. ...
                 `;
-            
-        const response = await openai.chat.completions.create({
+        const response = await this.openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
         });

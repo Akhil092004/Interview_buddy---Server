@@ -11,7 +11,7 @@ import { AiModule } from './ai/ai.module';
 import { AiSessionModule } from './ai-session/ai-session.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true, expandVariables:true }),
     QuestionModule, 
     AnswerModule, 
     MongooseModule.forRoot(process.env.MONGODB_URI ?? ''), UserModule, AiModule, AiSessionModule,
