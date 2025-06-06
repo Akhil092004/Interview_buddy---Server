@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -76,6 +77,9 @@ export class UserService {
                 throw new BadRequestException("Invalid password");
             }
 
+            user.lastLogin = new Date();
+            await user.save();
+
             const JwtPayload = {sub:user._id,username:user.username,role:user.role};
 
             return {
@@ -104,16 +108,16 @@ export class UserService {
                 throw new BadRequestException("User not found");
             }
 
-            const {password,...userData} = user.toObject();
+            const {password,lastLogin,...userData} = user.toObject();
 
-            console.log(password);
+            // console.log(password);
 
             const questions = await this.getMarkedQuestions(id);
             const sessionDetails = await this.aiSessionService.getSessionsByUserId(id);
 
             const ratings = await this.getRatingOnAnswer(id);
 
-            return {...userData,questions,sessionDetails,ratings};
+            return {userData,questions,sessionDetails,ratings};
 
         } catch {
             throw new BadRequestException("cannot get the user profile");
