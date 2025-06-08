@@ -31,6 +31,17 @@ export class UserController {
         return { message: 'Login successful' };
     }
 
+    @Post('logout')
+    @HttpCode(200)
+    logout(@Res({ passthrough: true }) res: Response): {message:string} {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true,
+        });
+        return { message: 'Logout successful' };
+    }
+
+
     @UseGuards(UserGuard)
     @Get('profile')
     async getProfile(@Request() req: { user: {sub:string} }): Promise<any> {
